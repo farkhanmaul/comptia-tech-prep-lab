@@ -1,4 +1,9 @@
 node_modules/
 .next/
 *.log
+*.tar.gz
+next-env.d.ts
 .DS_Store
+/dist/
+.vinext/
+.wrangler/
