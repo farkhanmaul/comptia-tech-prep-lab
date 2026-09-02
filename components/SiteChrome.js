@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export function Icon({ name, size = 20 }) {
   const paths = {
@@ -17,11 +18,11 @@ export function Icon({ name, size = 20 }) {
 export function SiteHeader() {
   const [open,setOpen]=useState(false);
   return <header className="topbar"><div className="shell nav-inner">
-    <a className="brand" href="/"><span className="brand-mark">T+</span><span><b>PREP LAB</b><small>PANDUAN FC0-U71</small></span></a>
-    <nav><a href="/#materi">Materi</a><a href="/#strategi">Strategi belajar</a><a href="/#evaluasi">Evaluasi</a><a href="/#glosarium">Glosarium</a></nav>
-    <a className="nav-cta" href="/materi/bab-1">Mulai Bab 1 <Icon name="arrow" size={16}/></a>
-    <button className="menu-button" onClick={()=>setOpen(!open)} aria-label="Buka menu"><Icon name="menu"/></button>
-  </div>{open&&<div className="mobile-nav"><a href="/#materi">Materi</a><a href="/#strategi">Strategi belajar</a><a href="/#evaluasi">Evaluasi</a><a href="/#glosarium">Glosarium</a></div>}</header>;
+    <Link className="brand" href="/"><span className="brand-mark">T+</span><span><b>PREP LAB</b><small>PANDUAN FC0-U71</small></span></Link>
+    <nav aria-label="Navigasi utama"><Link href="/materi">Materi</Link><Link href="/strategi-belajar">Strategi belajar</Link><Link href="/evaluasi">Evaluasi</Link><Link href="/glosarium">Glosarium</Link></nav>
+    <Link className="nav-cta" href="/materi/bab-1">Mulai Bab 1 <Icon name="arrow" size={16}/></Link>
+    <button className="menu-button" onClick={()=>setOpen(!open)} aria-label={open?"Tutup menu":"Buka menu"} aria-expanded={open}><Icon name="menu"/></button>
+  </div>{open&&<nav className="mobile-nav" aria-label="Navigasi mobile"><Link onClick={()=>setOpen(false)} href="/materi">Materi</Link><Link onClick={()=>setOpen(false)} href="/strategi-belajar">Strategi belajar</Link><Link onClick={()=>setOpen(false)} href="/evaluasi">Evaluasi</Link><Link onClick={()=>setOpen(false)} href="/glosarium">Glosarium</Link></nav>}</header>;
 }
 
 export function SiteFooter(){return <footer><div className="shell footer-inner"><div><span className="brand"><span className="brand-mark">T+</span><span><b>PREP LAB</b><small>PANDUAN FC0-U71</small></span></span><p>Bangun fondasi. Pahami sistem. Hadapi ujian dengan tenang.</p></div><p className="disclaimer">Situs pendamping belajar independen. CompTIA dan Tech+ adalah trademark milik CompTIA, Inc. Periksa kembali detail ujian terbaru pada situs resmi CompTIA sebelum melakukan pendaftaran.</p></div></footer>}

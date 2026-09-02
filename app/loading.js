@@ -1,0 +1,1 @@
+export default function Loading(){return <main className="route-loading" aria-label="Memuat halaman"><div className="loading-brand"><span className="brand-mark">T+</span><b>Menyiapkan halaman…</b></div><div className="loading-line"><span/></div></main>}
