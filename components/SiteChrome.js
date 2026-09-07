@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { allSectionIds, learningChapters, readProgress } from "../data/navigation";
 
 export function Icon({ name, size = 20 }) {
   const paths = {
@@ -17,12 +18,27 @@ export function Icon({ name, size = 20 }) {
 
 export function SiteHeader() {
   const [open,setOpen]=useState(false);
+  const [cta,setCta]=useState({href:"/materi/bab-1#bagian-1.1",label:"Mulai Bab 1"});
+  useEffect(()=>{
+    const update=()=>{
+      const progress=readProgress();
+      if(progress.length===allSectionIds.length){setCta({href:"/evaluasi",label:"Kerjakan Evaluasi"});return}
+      const saved=localStorage.getItem("techplus-last-section");
+      const nextId=saved&&!progress.includes(saved)?saved:allSectionIds.find(id=>!progress.includes(id));
+      const chapter=learningChapters.find(item=>item.sections.some(([id])=>id===nextId));
+      setCta({href:`/materi/bab-${chapter.id}#bagian-${nextId}`,label:progress.length?`Lanjutkan ${nextId}`:"Mulai Bab 1"});
+    };
+    update();
+    window.addEventListener("techplus-progress",update);
+    window.addEventListener("storage",update);
+    return()=>{window.removeEventListener("techplus-progress",update);window.removeEventListener("storage",update)};
+  },[]);
   return <header className="topbar"><div className="shell nav-inner">
     <Link className="brand" href="/"><span className="brand-mark">T+</span><span><b>PREP LAB</b><small>PANDUAN FC0-U71</small></span></Link>
     <nav aria-label="Navigasi utama"><Link href="/materi">Materi</Link><Link href="/strategi-belajar">Strategi belajar</Link><Link href="/evaluasi">Evaluasi</Link><Link href="/glosarium">Glosarium</Link></nav>
-    <Link className="nav-cta" href="/materi/bab-1">Mulai Bab 1 <Icon name="arrow" size={16}/></Link>
+    <Link className="nav-cta" href={cta.href}>{cta.label} <Icon name="arrow" size={16}/></Link>
     <button className="menu-button" onClick={()=>setOpen(!open)} aria-label={open?"Tutup menu":"Buka menu"} aria-expanded={open}><Icon name="menu"/></button>
-  </div>{open&&<nav className="mobile-nav" aria-label="Navigasi mobile"><Link onClick={()=>setOpen(false)} href="/materi">Materi</Link><Link onClick={()=>setOpen(false)} href="/strategi-belajar">Strategi belajar</Link><Link onClick={()=>setOpen(false)} href="/evaluasi">Evaluasi</Link><Link onClick={()=>setOpen(false)} href="/glosarium">Glosarium</Link></nav>}</header>;
+  </div>{open&&<nav className="mobile-nav" aria-label="Navigasi mobile"><Link onClick={()=>setOpen(false)} href="/materi">Materi</Link><Link onClick={()=>setOpen(false)} href="/strategi-belajar">Strategi belajar</Link><Link onClick={()=>setOpen(false)} href="/evaluasi">Evaluasi</Link><Link onClick={()=>setOpen(false)} href="/glosarium">Glosarium</Link><Link className="mobile-continue" onClick={()=>setOpen(false)} href={cta.href}>{cta.label} <Icon name="arrow" size={15}/></Link></nav>}</header>;
 }
 
 export function SiteFooter(){return <footer><div className="shell footer-inner"><div><span className="brand"><span className="brand-mark">T+</span><span><b>PREP LAB</b><small>PANDUAN FC0-U71</small></span></span><p>Bangun fondasi. Pahami sistem. Hadapi ujian dengan tenang.</p></div><p className="disclaimer">Situs pendamping belajar independen. CompTIA dan Tech+ adalah trademark milik CompTIA, Inc. Periksa kembali detail ujian terbaru pada situs resmi CompTIA sebelum melakukan pendaftaran.</p></div></footer>}
