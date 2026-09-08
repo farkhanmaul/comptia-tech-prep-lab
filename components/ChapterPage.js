@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { chapters } from "../data/materials";
+import { lessonDetails } from "../data/lesson-details";
 import { Icon, SiteFooter, SiteHeader } from "./SiteChrome";
 import { ChapterProgressSummary, ChapterSidebarTracker, SubsectionNavigation, SubsectionProgress } from "./ChapterProgress";
+import KnowledgeCheck from "./KnowledgeCheck";
+import LessonModule from "./LessonModule";
 
 export default function ChapterPage({chapterId}){
   const chapter=chapters.find(c=>c.id===chapterId);
@@ -17,9 +20,10 @@ export default function ChapterPage({chapterId}){
         {chapter.sections.map((s,index)=>{
           const previousSection=chapter.sections[index-1];
           const nextSection=chapter.sections[index+1];
-          const previous=previousSection?{href:`#bagian-${previousSection.id}`,label:previousSection.id}:prev?{href:`/materi/bab-${prev.id}#bagian-${prev.sections.at(-1).id}`,label:prev.sections.at(-1).id,external:true}:null;
-          const following=nextSection?{href:`#bagian-${nextSection.id}`,label:nextSection.id}:{href:next?`/materi/bab-${next.id}#bagian-${next.sections[0].id}`:"/evaluasi",label:next?next.sections[0].id:"Evaluasi",external:true};
-          return <section id={`bagian-${s.id}`} className="subsection" key={s.id}><SubsectionProgress chapterId={chapterId} index={index} total={chapter.sections.length}/><div className="subsection-title"><span>{s.id}</span><div><small>{s.label}</small><h2>{s.title}</h2></div></div><p className="lead">{s.summary}</p><div className="concept-grid">{s.concepts.map(c=><div className="concept" key={c.term}><strong>{c.term}</strong><p>{c.explanation}</p></div>)}</div>{s.example&&<div className="example"><span>CONTOH PENERAPAN</span><p>{s.example}</p></div>}<div className="remember"><span>INGAT</span><p>{s.remember}</p></div><SubsectionNavigation chapterId={chapterId} sectionId={s.id} previous={previous} next={following}/></section>
+          const previous=previousSection?{href:`#bagian-${previousSection.id}`,label:`${previousSection.id} ${previousSection.navTitle}`}:prev?{href:`/materi/bab-${prev.id}#bagian-${prev.sections.at(-1).id}`,label:`${prev.sections.at(-1).id} ${prev.sections.at(-1).navTitle}`,external:true}:null;
+          const following=nextSection?{href:`#bagian-${nextSection.id}`,label:`${nextSection.id} ${nextSection.navTitle}`}:{href:next?`/materi/bab-${next.id}#bagian-${next.sections[0].id}`:"/evaluasi",label:next?`${next.sections[0].id} ${next.sections[0].navTitle}`:"Evaluasi ringkas",external:true};
+          const detail=lessonDetails[s.id];
+          return <section id={`bagian-${s.id}`} className="subsection" key={s.id}><SubsectionProgress chapterId={chapterId} index={index} total={chapter.sections.length}/><div className="subsection-title"><span>{s.id}</span><div><small>{s.label}</small><h2>{s.title}</h2></div></div><p className="lead">{s.summary}</p><div className="concept-grid">{s.concepts.map(c=><div className="concept" key={c.term}><strong>{c.term}</strong><p>{c.explanation}</p></div>)}</div><LessonModule detail={detail}/>{s.example&&<div className="example"><span>STUDI KASUS</span><p>{s.example}</p></div>}<div className="remember"><span>INGAT</span><p>{s.remember}</p></div><KnowledgeCheck sectionId={s.id} quiz={detail.quiz}/><SubsectionNavigation chapterId={chapterId} sectionId={s.id} previous={previous} next={following}/></section>
         })}
         <ChapterProgressSummary chapterId={chapterId}/>
         <nav className="chapter-pagination">{prev?<Link href={`/materi/bab-${prev.id}`}><Icon name="back"/><span><small>BAB SEBELUMNYA</small><b>{prev.shortTitle}</b></span></Link>:<span/>}{next?<Link className="next" href={`/materi/bab-${next.id}`}><span><small>BAB BERIKUTNYA</small><b>{next.shortTitle}</b></span><Icon name="arrow"/></Link>:<Link className="next" href="/evaluasi"><span><small>SELESAI</small><b>Evaluasi ringkas</b></span><Icon name="arrow"/></Link>}</nav>

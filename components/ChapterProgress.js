@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { learningChapters, readProgress, writeProgress } from "../data/navigation";
+import { learningChapters, readProgress } from "../data/navigation";
 import { Icon } from "./SiteChrome";
 
 function useProgress(){
@@ -53,12 +53,9 @@ export function SubsectionProgress({chapterId,index,total}){
 export function SubsectionNavigation({chapterId,sectionId,previous,next}){
   const progress=useProgress();
   const done=progress.includes(sectionId);
-  function toggle(){
-    const updated=done?progress.filter(id=>id!==sectionId):[...new Set([...progress,sectionId])];
-    writeProgress(updated);
-  }
+  function openCheck(){document.getElementById(`quiz-${sectionId}`)?.scrollIntoView({behavior:"smooth",block:"center"})}
   const navLink=(target,direction)=>target?(target.external?<Link className={direction} href={target.href}>{direction==="previous"&&<Icon name="back" size={16}/>}<span><small>{direction==="previous"?"SEBELUMNYA":"LANJUT"}</small><b>{target.label}</b></span>{direction==="next"&&<Icon name="arrow" size={16}/>}</Link>:<a className={direction} href={target.href}>{direction==="previous"&&<Icon name="back" size={16}/>}<span><small>{direction==="previous"?"SEBELUMNYA":"LANJUT"}</small><b>{target.label}</b></span>{direction==="next"&&<Icon name="arrow" size={16}/>}</a>):<span/>;
-  return <nav className="subsection-navigation" aria-label={`Navigasi subbab ${sectionId}`}>{navLink(previous,"previous")}<button className={done?"done":""} onClick={toggle} aria-pressed={done}><span><Icon name="check" size={15}/></span>{done?"Sudah selesai":"Tandai selesai"}</button>{navLink(next,"next")}</nav>;
+  return <nav className="subsection-navigation" aria-label={`Navigasi subbab ${sectionId}`}>{navLink(previous,"previous")}<button className={done?"done":""} onClick={openCheck}><span><Icon name="check" size={15}/></span>{done?"Sudah dipahami":"Cek pemahaman"}</button>{navLink(next,"next")}</nav>;
 }
 
 export function ChapterProgressSummary({chapterId}){
