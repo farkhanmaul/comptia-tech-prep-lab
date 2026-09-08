@@ -20,7 +20,7 @@ export default function KnowledgeCheck({sectionId,quiz}){
 
   const answered=selected!==null;
   const correct=selected===quiz.answer;
-  return <section className={`knowledge-check ${solved?"solved":""}`} id={`quiz-${sectionId}`}><div className="knowledge-head"><div><span>CEK PEMAHAMAN</span><strong>1 pertanyaan · wajib benar untuk menyelesaikan subbab</strong></div>{solved&&<em><Icon name="check" size={14}/> Dipahami</em>}</div><h3>{quiz.question}</h3><div className="quiz-options">{quiz.options.map((option,index)=>{
+  return <section className={`knowledge-check ${solved?"solved":""}`} id={`quiz-${sectionId}`}><div className="knowledge-head"><div><h2>Latihan singkat</h2><p>Jawab benar untuk menyelesaikan subbab ini.</p></div>{solved&&<em><Icon name="check" size={14}/> Dipahami</em>}</div><h3>{quiz.question}</h3><div className="quiz-options">{quiz.options.map((option,index)=>{
     const state=answered&&index===selected?(correct?"correct":"incorrect"):answered&&index===quiz.answer?"answer":"";
     return <button className={state} onClick={()=>choose(index)} key={option} aria-pressed={selected===index}><span>{String.fromCharCode(65+index)}</span>{option}</button>;
   })}</div>{answered&&<div className={`quiz-feedback ${correct?"correct":"incorrect"}`} role="status"><strong>{correct?"Tepat.":"Belum tepat."}</strong><p>{quiz.explanation}{!correct&&" Coba pilih jawaban lain setelah meninjau penjelasan di atas."}</p></div>}</section>;

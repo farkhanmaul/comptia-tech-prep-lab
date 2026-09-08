@@ -18,7 +18,7 @@ export function Icon({ name, size = 20 }) {
 
 export function SiteHeader() {
   const [open,setOpen]=useState(false);
-  const [cta,setCta]=useState({href:"/materi/bab-1#bagian-1.1",label:"Mulai Bab 1"});
+  const [cta,setCta]=useState({href:"/materi/1/1",label:"Mulai Bab 1"});
   useEffect(()=>{
     const update=()=>{
       const progress=readProgress();
@@ -26,7 +26,8 @@ export function SiteHeader() {
       const saved=localStorage.getItem("techplus-last-section");
       const nextId=saved&&!progress.includes(saved)?saved:allSectionIds.find(id=>!progress.includes(id));
       const chapter=learningChapters.find(item=>item.sections.some(([id])=>id===nextId));
-      setCta({href:`/materi/bab-${chapter.id}#bagian-${nextId}`,label:progress.length?`Lanjutkan ${nextId}`:"Mulai Bab 1"});
+      const section=nextId.split(".")[1];
+      setCta({href:`/materi/${chapter.id}/${section}`,label:progress.length?`Lanjutkan ${nextId}`:"Mulai Bab 1"});
     };
     update();
     window.addEventListener("techplus-progress",update);

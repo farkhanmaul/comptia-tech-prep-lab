@@ -1,1 +1,1 @@
-import ChapterPage from "../../../components/ChapterPage"; export default function Page(){return <ChapterPage chapterId={3}/>}
+import { redirect } from "next/navigation"; export default function Page(){redirect("/materi/3/1")}
