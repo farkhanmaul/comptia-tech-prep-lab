@@ -27,3 +27,15 @@ export function writeProgress(progress){
   localStorage.setItem("techplus-progress-v2",JSON.stringify(progress));
   window.dispatchEvent(new CustomEvent("techplus-progress",{detail:progress}));
 }
+
+export function readReview(){
+  try{
+    const saved=JSON.parse(localStorage.getItem("techplus-review-v1")||"[]");
+    return Array.isArray(saved)?saved:[];
+  }catch{return []}
+}
+
+export function writeReview(review){
+  localStorage.setItem("techplus-review-v1",JSON.stringify(review));
+  window.dispatchEvent(new CustomEvent("techplus-review",{detail:review}));
+}

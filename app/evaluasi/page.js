@@ -1,7 +1,17 @@
 import Link from "next/link";
-import { reviewQuestions } from "../../data/materials";
+import ChapterEvaluation from "../../components/ChapterEvaluation";
 import { SiteFooter, SiteHeader } from "../../components/SiteChrome";
+import { chapters } from "../../data/materials";
+import { lessonDetails } from "../../data/lesson-details";
 
-export const metadata={title:"Evaluasi | CompTIA Tech+ Prep Lab"};
+export const metadata={title:"Evaluasi Bab | CompTIA Tech+ Prep Lab"};
 
-export default function EvaluationPage(){return <main><SiteHeader/><section className="page-hero"><div className="shell"><div className="breadcrumb"><Link href="/">Beranda</Link><span>/</span><b>Evaluasi</b></div><span className="section-label">EVALUASI RINGKAS</span><h1>Uji cara berpikir.</h1><p>Kuis sengaja singkat. Gunakan pertanyaan ini setelah menyelesaikan materi untuk mengecek apakah konsep sudah dapat diterapkan, bukan hanya diingat.</p></div></section><section className="inner-content shell"><div className="question-list evaluation-list">{reviewQuestions.map((q,i)=><article key={q.question}><span>0{i+1}</span><h3>{q.question}</h3><details><summary>Lihat jawaban dan penjelasan</summary><p><strong>{q.answer}</strong> — {q.explanation}</p></details></article>)}</div><Link className="button soft back-material" href="/materi">Kembali ke peta materi</Link></section><SiteFooter/></main>}
+function sampleQuestions(sections){
+  const indexes=sections.length<=4?sections.map((_,index)=>index):[0,Math.floor((sections.length-1)/3),Math.floor((sections.length-1)*2/3),sections.length-1];
+  return [...new Set(indexes)].slice(0,4).map(index=>{const section=sections[index];return {id:section.id,...lessonDetails[section.id].quiz}});
+}
+
+export default function EvaluationPage(){
+  const evaluationChapters=chapters.map(chapter=>({id:chapter.id,title:chapter.shortTitle,questions:sampleQuestions(chapter.sections)}));
+  return <main><SiteHeader/><section className="page-hero"><div className="shell"><div className="breadcrumb"><Link href="/">Beranda</Link><span>/</span><b>Evaluasi bab</b></div><span className="section-label">EVALUASI BAB</span><h1>Uji penguasaan, bukan sekadar ingatan.</h1><p>Setiap bab memiliki empat soal yang mewakili definisi, skenario, perbandingan, dan penerapan. Pembahasan muncul setelah kamu menjawab.</p></div></section><section className="inner-content shell"><ChapterEvaluation chapters={evaluationChapters}/><Link className="button soft back-material" href="/materi">Kembali ke peta materi</Link></section><SiteFooter/></main>;
+}
